@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import useSwr from 'swr';
 import Link from 'next/link';
 import Image from 'next/image';
 import Head from 'next/head';
@@ -128,16 +129,16 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
   )
 }
 
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  const { data } = await api.get('/episodes', {
+export const getStaticProps: GetStaticProps<HomeProps> = async () => {  
+  const { data } = await api.get('/api/db', {
     params: {
       _limit: 12,
       _sort: 'published_at',
       _order: 'desc'
     }
-  });
+  });  
 
-  const episodes: Array<Episode> = data.map(episode => {
+  const episodes: Array<Episode> = data.episodes.map(episode => {
     // parseISO vai converter para um date do javascript.
     const publishedAt = format(parseISO(episode.published_at), 'd MMM yy', {
       locale: ptBR
